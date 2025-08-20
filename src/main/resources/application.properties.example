@@ -1,0 +1,49 @@
+spring.application.name=staking
+## DB
+spring.datasource.driver-class-name=
+spring.datasource.url=
+spring.datasource.username=
+spring.datasource.password=
+spring.jpa.hibernate.ddl-auto=
+spring.jpa.show-sql=
+spring.jpa.properties.hibernate.format_sql=
+# REDIS
+spring.data.redis.host=
+spring.data.redis.port=
+spring.data.redis.database=
+spring.cache.redis.key-prefix=stakingapp:
+spring.cache.redis.use-key-prefix=
+# basic log level for all messages
+logging.level.org.hibernate=
+logging.level.org.hibernate.SQL=
+logging.level.org.hibernate.orm.jdbc.bind=
+# Statistics and slow queries
+logging.level.org.hibernate.stat=
+logging.level.org.hibernate.SQL_SLOW=
+# 2nd Level Cache
+logging.level.org.hibernate.cache=debug
+management.endpoints.web.exposure.include=*
+management.endpoint.health.show-details=always
+#gracefulshutdown
+server.shutdown=graceful
+spring.lifecycle.timeout-per-shutdown-phase=10s
+#JWT
+springboot.jwt.secret=
+##스웨거
+springdoc.api-docs.path=/v1/api-docs
+springdoc.swagger-ui.path=/v1
+springdoc.swagger-ui.url=/v1/api-docs
+##외부 호출 설정
+external.proxy.tia.url=
+external.proxy.eth.url=
+external.proxy.signer.url=
+external.proxy.signer.id=
+external.proxy.signer.pw=
+#
+feign.httpclient.enabled=
+feign.okhttp.enabled=
+feign.client.config.eth.loggerLevel=
+logging.level.org.apache.http=
+logging.level.feign=
+logging.level.org.springframework.cloud.openfeign=
+logging.level.com.springboot.staking.adaptor.proxy.EthNodeProxy=

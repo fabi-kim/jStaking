@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+
+  <appender class="ch.qos.logback.core.ConsoleAppender" name="STDOUT">
+    <encoder>
+      <Pattern>${CONSOLE_PATTERN}</Pattern>
+    </encoder>
+  </appender>
+
+  <logger additivity="false" level="DEBUG" name="feign">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+  <logger additivity="false" level="DEBUG" name="org.springframework.cloud.openfeign">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+  <!-- Feign 인터페이스의 FQCN (정확히 본인 패키지/클래스명으로) -->
+  <logger additivity="false" level="DEBUG" name="com.springboot.staking.adaptor.proxy.EthNodeProxy">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+
+  <!-- === HTTP 클라이언트 와이어 로그 (선택) === -->
+  <!-- Apache HttpClient 사용 시 -->
+  <logger additivity="false" level="INFO" name="org.apache.http">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+  <logger additivity="false" level="DEBUG" name="org.apache.http.wire">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+
+
+  <!-- Console appender 설정 -->
+  <logger additive="false" level="OFF" name="jdbc">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+
+
+  <logger additive="false" level="DEBUG" name="jdbc.sqlonly">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+  <logger additive="false" level="OFF" name="jdbc.sqltiming">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+  <logger additive="false" level="DEBUG" name="org.hibernate.SQL">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+  <logger additive="false" level="DEBUG" name="com.example.todolist.controller">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+  <logger additive="false" level="DEBUG" name="com.example.todolist.service">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+  <logger additive="false" level="DEBUG" name="com.example.todolist.domain">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+  <property name="CONSOLE_PATTERN"
+    value="%d{yyyy-MM-dd HH:mm:ss.SSS} %magenta([%thread]) %highlight([%-3level]) [%thread] %logger{5} - %msg %n"/>
+
+  <root level="INFO">
+    <appender-ref ref="STDOUT"/>
+  </root>
+</configuration>
