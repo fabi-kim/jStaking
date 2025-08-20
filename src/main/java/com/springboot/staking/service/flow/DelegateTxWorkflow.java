@@ -45,7 +45,7 @@ public class DelegateTxWorkflow extends
   protected BroadcastResponse broadcast(Symbol symbol, String signedRawTx) {
     log.info("---> Broadcast Delegate Tx Workflow");
     var response = NodeServices.getServiceBySymbol(symbol)
-        .broadcast(new BroadcastRequest(signedRawTx));
+        .broadcast(BroadcastRequest.of(signedRawTx));
     log.info("* Broadcast Delegate Tx Response");
     return response;
   }
