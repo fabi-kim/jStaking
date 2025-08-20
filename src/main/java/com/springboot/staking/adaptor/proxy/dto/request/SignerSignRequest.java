@@ -14,13 +14,13 @@ public record SignerSignRequest(
         new Options(options.accountNumber, options.sequence, "mocha-4"));
   }
 
-  public static SignerSignRequest ofTia(String payload, long accountNumber, int sequence) {
+  public static SignerSignRequest ofTia(String payload, String accountNumber, String sequence) {
     return new SignerSignRequest(payload, 0, new Options(accountNumber, sequence, "mocha-4"));
   }
 
   public record Options(
-      long accountNumber,
-      int sequence,
+      String accountNumber,
+      String sequence,
       String chainId
   ) {
 
