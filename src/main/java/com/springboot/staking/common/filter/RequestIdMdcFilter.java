@@ -20,7 +20,7 @@ public class RequestIdMdcFilter extends OncePerRequestFilter {
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                  FilterChain chain) throws ServletException, IOException {
+      FilterChain chain) throws ServletException, IOException {
     String rid = request.getHeader(HEADER);
     // 없으면 생성(선택)
     /*

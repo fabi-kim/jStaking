@@ -9,14 +9,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    private final RequestIdHeaderArgumentResolver requestIdHeaderArgumentResolver;
+  private final RequestIdHeaderArgumentResolver requestIdHeaderArgumentResolver;
 
-    public WebConfig(RequestIdHeaderArgumentResolver resolver) {
-        this.requestIdHeaderArgumentResolver = resolver;
-    }
+  public WebConfig(RequestIdHeaderArgumentResolver resolver) {
+    this.requestIdHeaderArgumentResolver = resolver;
+  }
 
-    @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(requestIdHeaderArgumentResolver);
-    }
+  @Override
+  public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+    resolvers.add(requestIdHeaderArgumentResolver);
+  }
 }

@@ -12,35 +12,35 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @Component
 public class RequestIdHeaderArgumentResolver implements HandlerMethodArgumentResolver {
 
-    @Override
-    public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(RequestIdHeader.class)
-                && UUID.class.isAssignableFrom(parameter.getParameterType());
+  @Override
+  public boolean supportsParameter(MethodParameter parameter) {
+    return parameter.hasParameterAnnotation(RequestIdHeader.class)
+        && UUID.class.isAssignableFrom(parameter.getParameterType());
+  }
+
+  @Override
+  public Object resolveArgument(MethodParameter parameter,
+      ModelAndViewContainer mavContainer,
+      NativeWebRequest webRequest,
+      WebDataBinderFactory binderFactory)
+      throws MissingRequestHeaderException {
+
+    RequestIdHeader ann = parameter.getParameterAnnotation(RequestIdHeader.class);
+    String headerName = ann.name();
+    String raw = webRequest.getHeader(headerName);
+
+    if ((raw == null || raw.isBlank())) {
+      if (ann.required()) {
+        throw new MissingRequestHeaderException(headerName, parameter);
+      }
+      return null;
     }
 
-    @Override
-    public Object resolveArgument(MethodParameter parameter,
-                                  ModelAndViewContainer mavContainer,
-                                  NativeWebRequest webRequest,
-                                  WebDataBinderFactory binderFactory)
-        throws MissingRequestHeaderException {
-
-        RequestIdHeader ann = parameter.getParameterAnnotation(RequestIdHeader.class);
-        String headerName = ann.name();
-        String raw = webRequest.getHeader(headerName);
-
-        if ((raw == null || raw.isBlank())) {
-            if (ann.required()) {
-                throw new MissingRequestHeaderException(headerName, parameter);
-            }
-            return null;
-        }
-
-        try {
-            return UUID.fromString(raw);
-        } catch (IllegalArgumentException e) {
-            // 400을 유도하려면 적절한 예외를 던집니다.
-            throw new IllegalArgumentException("Invalid UUID in header '" + headerName + "': " + raw, e);
-        }
+    try {
+      return UUID.fromString(raw);
+    } catch (IllegalArgumentException e) {
+      // 400을 유도하려면 적절한 예외를 던집니다.
+      throw new IllegalArgumentException("Invalid UUID in header '" + headerName + "': " + raw, e);
     }
+  }
 }
