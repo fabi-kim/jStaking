@@ -53,7 +53,7 @@
     <appender-ref ref="STDOUT"/>
   </logger>
   <property name="CONSOLE_PATTERN"
-    value="%d{yyyy-MM-dd HH:mm:ss.SSS} %magenta([%thread]) %highlight([%-3level]) [%thread] %logger{5} - %msg %n"/>
+    value="%d{yyyy-MM-dd HH:mm:ss.SSS} %magenta([%thread]) %highlight([%-5level]) [%thread] [requestId=%X{requestId}] %logger{5} - %msg %n"/>
 
   <root level="INFO">
     <appender-ref ref="STDOUT"/>
