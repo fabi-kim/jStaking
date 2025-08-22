@@ -18,6 +18,7 @@ import com.springboot.staking.service.NodeService;
 import com.springboot.staking.service.NodeServiceFactory;
 import com.springboot.staking.service.StakingService;
 import com.springboot.staking.service.StakingServiceFactory;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,7 @@ public class DelegateTxWorkflowTest {
 
   //
   Symbol symbol = Symbol.TIA;
+  UUID requestId = UUID.randomUUID();
 
   @Mock
   StakingServiceFactory stakingFactory;
@@ -40,6 +42,8 @@ public class DelegateTxWorkflowTest {
   NodeServiceFactory nodeFactory;
   @Mock
   private StakingService stakingService;
+  @Mock
+  private StakingTxStore stakingTxStore;
   @Mock
   private NodeService nodeService;
 
@@ -58,7 +62,8 @@ public class DelegateTxWorkflowTest {
   void run_success() {
     String unsignedTx = "RAW_TX";
     StakingRequest stakingRequest = StakingFixtures.stakingRequest();
-    DelegateTxResponse delegateTxResponse = StakingFixtures.delegateTxResponseWithUnsignedTx(unsignedTx);
+    DelegateTxResponse delegateTxResponse = StakingFixtures.delegateTxResponseWithUnsignedTx(
+        unsignedTx);
     String signed = "0x";
     BroadcastResponse broadcastResponse = StakingFixtures.broadcastResponse();
     TransactionResponse transactionResponse = StakingFixtures.transactionResponse();
@@ -68,7 +73,7 @@ public class DelegateTxWorkflowTest {
     when(nodeService.broadcast(any(BroadcastRequest.class))).thenReturn(broadcastResponse);
     when(nodeService.getTx(any(String.class))).thenReturn(transactionResponse);
 
-    var result = workflow.run(Symbol.TIA, stakingRequest);
+    var result = workflow.run(requestId, Symbol.TIA, stakingRequest);
     assertEquals(transactionResponse, result);
 
     //순서/인자 검증

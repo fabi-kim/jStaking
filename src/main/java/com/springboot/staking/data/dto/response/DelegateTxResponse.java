@@ -12,6 +12,10 @@ public record DelegateTxResponse(
     String sequence
 ) {
 
+  public static DelegateTxResponse of(String unsignedTx, String accountNumber, String sequence) {
+    return new DelegateTxResponse(unsignedTx, accountNumber, sequence);
+  }
+
   public static DelegateTxResponse from(SignerDelegateTxResponse v) {
     return new DelegateTxResponse(v.unsignedTx(), v.accountNumber(), v.sequence());
   }

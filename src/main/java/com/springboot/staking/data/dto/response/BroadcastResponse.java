@@ -10,6 +10,11 @@ public record BroadcastResponse(
     String response
 ) {
 
+  public static BroadcastResponse of(String txhash) {
+    return new BroadcastResponse(txhash,
+        null);
+  }
+
   public static BroadcastResponse from(SignerBroadcastTxResponse signerBroadcastTxResponse) {
     return new BroadcastResponse(signerBroadcastTxResponse.txhash(),
         signerBroadcastTxResponse.response());

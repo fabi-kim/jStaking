@@ -11,4 +11,7 @@ public record StakingRequest(
     String amount
 ) {
 
+  public static StakingRequest of(String delegateAddress, String validatorAddress, String amount) {
+    return new StakingRequest(delegateAddress, validatorAddress, amount);
+  }
 }

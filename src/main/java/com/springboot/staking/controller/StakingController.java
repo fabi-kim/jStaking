@@ -1,5 +1,6 @@
 package com.springboot.staking.controller;
 
+import com.springboot.staking.common.annotation.RequestIdHeader;
 import com.springboot.staking.common.constant.Symbol;
 import com.springboot.staking.data.dto.request.StakingRequest;
 import com.springboot.staking.data.dto.response.DelegateTxResponse;
@@ -8,6 +9,7 @@ import com.springboot.staking.service.StakingServiceFactory;
 import com.springboot.staking.service.usecase.StakingUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,9 +40,12 @@ public class StakingController {
 
   @Operation(summary = "위임 플로우")
   @PostMapping("/{symbol}/flow/delegate")
-  public ResponseEntity<TransactionResponse> delegate(@PathVariable("symbol") Symbol symbol,
+  public ResponseEntity<TransactionResponse> delegate(
+      @RequestIdHeader UUID requestId,
+      @PathVariable("symbol") Symbol symbol,
       @Valid @RequestBody StakingRequest stakingRequest) {
-    var resp = useCase.delegate(symbol, stakingRequest);
+
+    var resp = useCase.delegate(requestId, symbol, stakingRequest);
     return ResponseEntity.ok(resp);
   }
 
