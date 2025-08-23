@@ -3,10 +3,9 @@ package com.springboot.staking.service.worker.staking;
 import com.springboot.staking.common.constant.Step;
 import com.springboot.staking.common.constant.Symbol;
 import com.springboot.staking.data.dao.StakingTxDao;
-import com.springboot.staking.data.dto.request.SignRequest;
-import com.springboot.staking.data.dto.response.DelegateTxResponse;
 import com.springboot.staking.data.entity.StakingTx;
 import com.springboot.staking.service.NodeServiceFactory;
+import com.springboot.staking.service.builder.SignRequestBuilderFactory;
 import com.springboot.staking.service.worker.StepHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +18,7 @@ class Staking01SignHandler implements StepHandler {
 
   private final NodeServiceFactory nodeServiceFactory;
   private final StakingTxDao stakingTxDao;
+  private final SignRequestBuilderFactory signRequestBuilderFactory;
 
   @Override
   public Step step() {
@@ -31,11 +31,11 @@ class Staking01SignHandler implements StepHandler {
 
     log.info("Signing tx for requestId: {}", tx.getRequestId());
 
-    DelegateTxResponse delegateTxResponse = DelegateTxResponse.of(tx.getUnsignedTx(), "120019",
-        "15");
+    var signRequestBuilder = signRequestBuilderFactory.getBuilder(symbol);
+    var signRequest = signRequestBuilder.buildSignRequest(tx);
 
     var nodeService = nodeServiceFactory.getServiceBySymbol(symbol);
-    var signedTx = nodeService.sign(SignRequest.from(delegateTxResponse));
+    var signedTx = nodeService.sign(signRequest);
 
     // signedTx 저장
     stakingTxDao.updateSignedTx(tx.getId(), signedTx);

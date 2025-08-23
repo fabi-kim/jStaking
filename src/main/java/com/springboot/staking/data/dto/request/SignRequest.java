@@ -1,6 +1,6 @@
 package com.springboot.staking.data.dto.request;
 
-import com.springboot.staking.adaptor.proxy.dto.request.SignerSignRequest.Options;
+import com.springboot.staking.data.dto.Options;
 import com.springboot.staking.data.dto.response.DelegateTxResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -12,6 +12,14 @@ public record SignRequest(
 
   public static SignRequest from(DelegateTxResponse delegateTxResponse) {
     return new SignRequest(delegateTxResponse.unsignedTx(),
-        new Options(delegateTxResponse.accountNumber(), delegateTxResponse.sequence(), null));
+        delegateTxResponse.options());
+  }
+
+  public static SignRequest of(String unsignedTx) {
+    return new SignRequest(unsignedTx, null);
+  }
+
+  public static SignRequest forCosmos(String unsignedTx, String accountNumber, String sequence, String chainId) {
+    return new SignRequest(unsignedTx, new Options(accountNumber, sequence, chainId));
   }
 }

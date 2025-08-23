@@ -129,4 +129,16 @@ public class StakingTxDao {
     repository.updateTxHash(txId, txHash);
     log.debug("Updated txHash for tx {}", txId);
   }
+
+  @Transactional
+  public void updateExtraData(Long txId, String extraData) {
+    repository.updateExtraData(txId, extraData);
+    log.debug("Updated extraData for tx {}", txId);
+  }
+
+  @Transactional
+  public void updateUnsignedTxAndExtraData(Long txId, String unsignedTx, String extraData) {
+    repository.updateUnsignedTxAndExtraData(txId, unsignedTx, extraData);
+    log.debug("Updated unsignedTx and extraData for tx {}", txId);
+  }
 }

@@ -51,6 +51,10 @@ public class StakingTx extends BaseEntity {
   @Basic(fetch = FetchType.LAZY)
   private String signedTx;
 
+  @Lob
+  @Basic(fetch = FetchType.LAZY)
+  private String extraData;
+
   private String txHash;
 
 

@@ -92,4 +92,12 @@ public interface StakingTxRepository extends JpaRepository<StakingTx, Long> {
   @Modifying(clearAutomatically = true, flushAutomatically = true)
   @Query("UPDATE StakingTx s SET s.txHash = :txHash WHERE s.id = :id")
   int updateTxHash(@Param("id") Long id, @Param("txHash") String txHash);
+
+  @Modifying(clearAutomatically = true, flushAutomatically = true)
+  @Query("UPDATE StakingTx s SET s.extraData = :extraData WHERE s.id = :id")
+  int updateExtraData(@Param("id") Long id, @Param("extraData") String extraData);
+
+  @Modifying(clearAutomatically = true, flushAutomatically = true)
+  @Query("UPDATE StakingTx s SET s.unsignedTx = :unsignedTx, s.extraData = :extraData WHERE s.id = :id")
+  int updateUnsignedTxAndExtraData(@Param("id") Long id, @Param("unsignedTx") String unsignedTx, @Param("extraData") String extraData);
 }
