@@ -1,24 +1,21 @@
 package com.springboot.staking.service.worker.staking;
 
+import com.springboot.staking.common.constant.Step;
 import com.springboot.staking.common.constant.Symbol;
-import com.springboot.staking.data.dto.response.BroadcastResponse;
 import com.springboot.staking.data.entity.StakingTx;
-import com.springboot.staking.data.entity.StakingTx.Step;
-import com.springboot.staking.service.flow.DelegateTxWorkflow;
+import com.springboot.staking.data.entity.StakingTx.Status;
+import com.springboot.staking.service.NodeServiceFactory;
 import com.springboot.staking.service.worker.StepHandler;
-import com.springboot.staking.service.worker.StepHandlerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
+@RequiredArgsConstructor
 class Staking03ConfirmHandler implements StepHandler {
 
-  private final DelegateTxWorkflow delegateTxWorkflow;
-
-  public Staking03ConfirmHandler(DelegateTxWorkflow delegateTxWorkflow,
-      StepHandlerFactory stepHandlerFactory) {
-    this.delegateTxWorkflow = delegateTxWorkflow;
-    stepHandlerFactory.addHandler(step(), this);
-  }
+  private final NodeServiceFactory nodeServiceFactory;
 
   @Override
   public Step step() {
@@ -28,11 +25,15 @@ class Staking03ConfirmHandler implements StepHandler {
   @Override
   public StepResult process(StakingTx tx) {
     var symbol = Symbol.valueOf(tx.getProduct().getSymbol());
-    var requestId = tx.getRequestId();
     var txHash = tx.getTxHash();
 
-    BroadcastResponse broadcastResponse = BroadcastResponse.of(txHash);
-    delegateTxWorkflow.confirmed(requestId, symbol, broadcastResponse);
-    return new StepResult(Step.CONFIRM);
+    log.info("Confirming tx with hash: {} for requestId: {}", txHash, tx.getRequestId());
+
+    var nodeService = nodeServiceFactory.getServiceBySymbol(symbol);
+    var response = nodeService.getTx(txHash);
+
+    log.info("Confirmed tx status: {} for requestId: {}", response.txHash(), tx.getRequestId());
+
+    return new StepResult(Step.CONFIRM, Status.CONFIRMED, "Transaction confirmed");
   }
 }

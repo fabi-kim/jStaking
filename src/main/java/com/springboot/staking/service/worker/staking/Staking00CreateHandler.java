@@ -1,24 +1,23 @@
 package com.springboot.staking.service.worker.staking;
 
+import com.springboot.staking.common.constant.Step;
 import com.springboot.staking.common.constant.Symbol;
+import com.springboot.staking.data.dao.StakingTxDao;
 import com.springboot.staking.data.dto.request.StakingRequest;
 import com.springboot.staking.data.entity.StakingTx;
-import com.springboot.staking.data.entity.StakingTx.Step;
-import com.springboot.staking.service.flow.DelegateTxWorkflow;
+import com.springboot.staking.service.StakingServiceFactory;
 import com.springboot.staking.service.worker.StepHandler;
-import com.springboot.staking.service.worker.StepHandlerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
+@RequiredArgsConstructor
 class Staking00CreateHandler implements StepHandler {
 
-  private final DelegateTxWorkflow delegateTxWorkflow;
-
-  public Staking00CreateHandler(DelegateTxWorkflow delegateTxWorkflow,
-      StepHandlerFactory stepHandlerFactory) {
-    this.delegateTxWorkflow = delegateTxWorkflow;
-    stepHandlerFactory.addHandler(step(), this);
-  }
+  private final StakingServiceFactory stakingServiceFactory;
+  private final StakingTxDao stakingTxDao;
 
   @Override
   public Step step() {
@@ -28,11 +27,18 @@ class Staking00CreateHandler implements StepHandler {
   @Override
   public StepResult process(StakingTx tx) {
     var symbol = Symbol.valueOf(tx.getProduct().getSymbol());
-    var requestId = tx.getRequestId();
     var req = StakingRequest.of(tx.getDelegator(), tx.getValidator(), tx.getAmount());
 
-    delegateTxWorkflow.create(requestId, symbol, req);
+    log.info("Creating delegate tx for requestId: {}", tx.getRequestId());
 
-    return new StepResult(StakingTx.Step.SIGN);
+    var stakingService = stakingServiceFactory.getServiceBySymbol(symbol);
+    var response = stakingService.createDelegateTx(req);
+
+    // unsignedTx 저장
+    stakingTxDao.updateUnsignedTx(tx.getId(), response.unsignedTx());
+
+    log.info("Created delegate tx with unsignedTx length: {}", response.unsignedTx().length());
+
+    return success();
   }
 }

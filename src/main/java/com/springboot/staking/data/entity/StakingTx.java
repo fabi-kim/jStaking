@@ -1,5 +1,6 @@
 package com.springboot.staking.data.entity;
 
+import com.springboot.staking.common.constant.Step;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -69,8 +70,6 @@ public class StakingTx extends BaseEntity {
   @ManyToOne(fetch = FetchType.EAGER, optional = false)  //EAGER는 N+1과 과도한 로딩 유발
   @JoinColumn(name = "product_id")
   private Product product;
-
-  public enum Step {CREATE, SIGN, BROADCAST, CONFIRM}
 
   public enum Status {READY, CONFIRMED, IN_PROGRESS, FAILED}
 

@@ -1,24 +1,24 @@
 package com.springboot.staking.service.worker.staking;
 
+import com.springboot.staking.common.constant.Step;
 import com.springboot.staking.common.constant.Symbol;
+import com.springboot.staking.data.dao.StakingTxDao;
+import com.springboot.staking.data.dto.request.SignRequest;
 import com.springboot.staking.data.dto.response.DelegateTxResponse;
 import com.springboot.staking.data.entity.StakingTx;
-import com.springboot.staking.data.entity.StakingTx.Step;
-import com.springboot.staking.service.flow.DelegateTxWorkflow;
+import com.springboot.staking.service.NodeServiceFactory;
 import com.springboot.staking.service.worker.StepHandler;
-import com.springboot.staking.service.worker.StepHandlerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
+@RequiredArgsConstructor
 class Staking01SignHandler implements StepHandler {
 
-  private final DelegateTxWorkflow delegateTxWorkflow;
-
-  public Staking01SignHandler(DelegateTxWorkflow delegateTxWorkflow,
-      StepHandlerFactory stepHandlerFactory) {
-    this.delegateTxWorkflow = delegateTxWorkflow;
-    stepHandlerFactory.addHandler(step(), this);
-  }
+  private final NodeServiceFactory nodeServiceFactory;
+  private final StakingTxDao stakingTxDao;
 
   @Override
   public Step step() {
@@ -28,12 +28,20 @@ class Staking01SignHandler implements StepHandler {
   @Override
   public StepResult process(StakingTx tx) {
     var symbol = Symbol.valueOf(tx.getProduct().getSymbol());
-    var requestId = tx.getRequestId();
+
+    log.info("Signing tx for requestId: {}", tx.getRequestId());
 
     DelegateTxResponse delegateTxResponse = DelegateTxResponse.of(tx.getUnsignedTx(), "120019",
-        "12");
+        "15");
 
-    delegateTxWorkflow.sign(requestId, symbol, delegateTxResponse);
-    return new StepResult(StakingTx.Step.BROADCAST);
+    var nodeService = nodeServiceFactory.getServiceBySymbol(symbol);
+    var signedTx = nodeService.sign(SignRequest.from(delegateTxResponse));
+
+    // signedTx 저장
+    stakingTxDao.updateSignedTx(tx.getId(), signedTx);
+
+    log.info("Signed tx for requestId: {}", tx.getRequestId());
+
+    return success();
   }
 }

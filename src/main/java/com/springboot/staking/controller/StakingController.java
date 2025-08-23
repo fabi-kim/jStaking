@@ -4,9 +4,11 @@ import com.springboot.staking.common.annotation.RequestIdHeader;
 import com.springboot.staking.common.constant.Symbol;
 import com.springboot.staking.data.dto.request.StakingRequest;
 import com.springboot.staking.data.dto.response.DelegateTxResponse;
+import com.springboot.staking.data.dto.response.StakingTxResponse;
 import com.springboot.staking.data.dto.response.TransactionResponse;
 import com.springboot.staking.service.StakingServiceFactory;
 import com.springboot.staking.service.usecase.StakingUseCase;
+import com.springboot.staking.service.worker.StakingWorker;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.util.UUID;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class StakingController {
 
   private final StakingServiceFactory stakingServiceFactory;
+  private final StakingWorker stakingWorker;
   private final StakingUseCase useCase;
 
 
@@ -46,6 +49,17 @@ public class StakingController {
       @Valid @RequestBody StakingRequest stakingRequest) {
 
     var resp = useCase.delegate(requestId, symbol, stakingRequest);
+    return ResponseEntity.ok(resp);
+  }
+
+  @Operation(summary = "위임 요청 큐에 저장")
+  @PostMapping("/{symbol}/worker/delegate")
+  public ResponseEntity<StakingTxResponse> createWorkerJob(
+      @RequestIdHeader UUID requestId,
+      @PathVariable("symbol") Symbol symbol,
+      @Valid @RequestBody StakingRequest stakingRequest) {
+
+    var resp = stakingWorker.createWorkerJob(requestId, symbol, stakingRequest);
     return ResponseEntity.ok(resp);
   }
 

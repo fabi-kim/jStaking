@@ -43,8 +43,6 @@ public class DelegateTxWorkflowTest {
   @Mock
   private StakingService stakingService;
   @Mock
-  private StakingTxStore stakingTxStore;
-  @Mock
   private NodeService nodeService;
 
   @InjectMocks

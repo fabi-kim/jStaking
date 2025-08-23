@@ -1,7 +1,12 @@
 package com.springboot.staking.service.worker;
 
-import com.springboot.staking.data.repository.StakingTxRepository;
-import com.springboot.staking.service.flow.StakingTxStore;
+import com.springboot.staking.common.constant.Symbol;
+import com.springboot.staking.data.dao.StakingTxDao;
+import com.springboot.staking.data.dto.request.StakingRequest;
+import com.springboot.staking.data.dto.response.StakingTxResponse;
+import com.springboot.staking.data.entity.StakingTx;
+import com.springboot.staking.data.mapper.StakingTxMapper;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -12,27 +17,33 @@ import org.springframework.stereotype.Service;
 @Service
 public class StakingWorker {
 
-  private final StakingTxRepository stakingTxRepository;
-  private final StepHandlerFactory stepHandlerFactory;
-  private final StakingTxStore stakingTxStore;
+  private final StakingStateMachine stakingStateMachine;
+  private final StakingTxDao stakingTxDao;
+  private final StakingTxMapper stakingTxMapper;
+
+  public StakingTxResponse createWorkerJob(UUID requestId, Symbol symbol,
+      StakingRequest stakingRequest) {
+    var tx = stakingTxDao.createReady(requestId, symbol, StakingTx.TxType.DELEGATE,
+        stakingRequest.delegateAddress(), stakingRequest.validatorAddress(),
+        stakingRequest.amount());
+
+    log.info("[createWorkerJob] tx: {}", tx);
+
+    return stakingTxMapper.toDto(tx);
+
+  }
 
   @Scheduled(fixedDelayString = "${staking.createWorker.delay:3000}")
   public void tick() {
     log.info("tick!");
-    stakingTxStore.claim().ifPresent(this::processOne);
+    stakingTxDao.pickAnyReady().ifPresent(this::processOne);
   }
 
-  /**
-   * 1) 클레임: 아주 짧은 TX로 id만 들고 나오기
-   */
-
   protected void processOne(Long id) {
-    var tx = stakingTxRepository.findById(id).orElseThrow();
-    var handler = stepHandlerFactory.getHandler(tx.getStep());
     try {
-      handler.process(tx);
+      stakingStateMachine.processTransaction(id);
     } catch (Exception e) {
-      log.error(e.getMessage(), e);
+      log.error("Failed to process transaction {}: {}", id, e.getMessage(), e);
     }
   }
 }
