@@ -1,5 +1,6 @@
 package com.springboot.staking.controller;
 
+import com.springboot.staking.common.annotation.RedissonLock;
 import com.springboot.staking.common.annotation.RequestIdHeader;
 import com.springboot.staking.common.constant.Symbol;
 import com.springboot.staking.data.dto.request.StakingRequest;
@@ -52,6 +53,7 @@ public class StakingController {
     return ResponseEntity.ok(resp);
   }
 
+  @RedissonLock(keys = {"#symbol"}, error = "이미 요청되었습니다.")
   @Operation(summary = "위임 요청 큐에 저장")
   @PostMapping("/{symbol}/worker/delegate")
   public ResponseEntity<StakingTxResponse> createWorkerJob(
