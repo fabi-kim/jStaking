@@ -1,8 +1,8 @@
 package com.springboot.staking.application.dto.command;
 
-import com.springboot.staking.common.constant.Symbol;
 import com.springboot.staking.domain.shared.vo.RequestId;
 import com.springboot.staking.domain.staking.model.StakingTransaction;
+import com.springboot.staking.shared.constant.Symbol;
 
 public record CreateStakingTransactionCommand(
     RequestId requestId,
@@ -12,7 +12,7 @@ public record CreateStakingTransactionCommand(
     String validator,
     String amount
 ) {
-  
+
   public static CreateStakingTransactionCommand of(
       RequestId requestId,
       Symbol symbol,
@@ -20,7 +20,7 @@ public record CreateStakingTransactionCommand(
       String delegator,
       String validator,
       String amount) {
-    
+
     return new CreateStakingTransactionCommand(
         requestId, symbol, txType, delegator, validator, amount);
   }

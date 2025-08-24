@@ -1,7 +1,7 @@
 package com.springboot.staking.infrastructure.persistence;
 
-import com.springboot.staking.data.entity.StakingTx;
-import com.springboot.staking.common.constant.Step;
+import com.springboot.staking.infrastructure.persistence.entity.StakingTx;
+import com.springboot.staking.shared.constant.Step;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,9 +27,9 @@ public interface StakingTransactionJpaRepository extends JpaRepository<StakingTx
   @Modifying(clearAutomatically = true, flushAutomatically = true)
   @Query("""
         update StakingTx s
-           set s.status = com.springboot.staking.data.entity.StakingTx.Status.IN_PROGRESS
+           set s.status = com.springboot.staking.infrastructure.persistence.entity.StakingTx.Status.IN_PROGRESS
          where s.id = :id
-           and s.status = com.springboot.staking.data.entity.StakingTx.Status.READY
+           and s.status = com.springboot.staking.infrastructure.persistence.entity.StakingTx.Status.READY
       """)
   int claim(@Param("id") Long id);
 
@@ -50,7 +50,8 @@ public interface StakingTransactionJpaRepository extends JpaRepository<StakingTx
 
   @Modifying(clearAutomatically = true, flushAutomatically = true)
   @Query("UPDATE StakingTx s SET s.unsignedTx = :unsignedTx, s.extraData = :extraData WHERE s.id = :id")
-  int updateUnsignedTxAndExtraData(@Param("id") Long id, @Param("unsignedTx") String unsignedTx, @Param("extraData") String extraData);
+  int updateUnsignedTxAndExtraData(@Param("id") Long id, @Param("unsignedTx") String unsignedTx,
+      @Param("extraData") String extraData);
 
   @Modifying(clearAutomatically = true, flushAutomatically = true)
   @Query("UPDATE StakingTx s SET s.signedTx = :signedTx WHERE s.id = :id")

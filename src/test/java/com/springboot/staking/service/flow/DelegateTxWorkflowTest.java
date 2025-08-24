@@ -6,7 +6,6 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.springboot.staking.common.constant.Symbol;
 import com.springboot.staking.data.dto.request.BroadcastRequest;
 import com.springboot.staking.data.dto.request.SignRequest;
 import com.springboot.staking.data.dto.request.StakingRequest;
@@ -18,6 +17,7 @@ import com.springboot.staking.service.NodeService;
 import com.springboot.staking.service.NodeServiceFactory;
 import com.springboot.staking.service.StakingService;
 import com.springboot.staking.service.StakingServiceFactory;
+import com.springboot.staking.shared.constant.Symbol;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

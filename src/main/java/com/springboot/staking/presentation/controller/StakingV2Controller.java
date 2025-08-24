@@ -1,18 +1,18 @@
 package com.springboot.staking.presentation.controller;
 
 import com.springboot.staking.application.dto.command.CreateStakingTransactionCommand;
+import com.springboot.staking.application.dto.request.StakingRequest;
+import com.springboot.staking.application.dto.response.DelegateTxResponse;
+import com.springboot.staking.application.dto.response.StakingTxResponse;
+import com.springboot.staking.application.dto.response.TransactionResponse;
+import com.springboot.staking.application.service.StakingDelegateApplicationService;
 import com.springboot.staking.application.service.StakingWorkflowApplicationService;
-import com.springboot.staking.common.annotation.RedissonLock;
-import com.springboot.staking.common.annotation.RequestIdHeader;
-import com.springboot.staking.common.constant.Symbol;
-import com.springboot.staking.data.dto.request.StakingRequest;
-import com.springboot.staking.data.dto.response.DelegateTxResponse;
-import com.springboot.staking.data.dto.response.StakingTxResponse;
-import com.springboot.staking.data.dto.response.TransactionResponse;
 import com.springboot.staking.domain.shared.vo.RequestId;
 import com.springboot.staking.domain.staking.model.StakingTransaction;
-import com.springboot.staking.service.StakingServiceFactory;
-import com.springboot.staking.service.usecase.StakingUseCase;
+import com.springboot.staking.domain.staking.service.StakingServiceFactory;
+import com.springboot.staking.shared.annotation.RedissonLock;
+import com.springboot.staking.shared.annotation.RequestIdHeader;
+import com.springboot.staking.shared.constant.Symbol;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.util.UUID;
@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class StakingV2Controller {
 
   private final StakingServiceFactory stakingServiceFactory;
-  private final StakingUseCase useCase;
+  private final StakingDelegateApplicationService delegateService;
   private final StakingWorkflowApplicationService stakingWorkflowService;
 
   @Operation(summary = "트랜잭션 생성")
@@ -50,7 +50,7 @@ public class StakingV2Controller {
       @PathVariable("symbol") Symbol symbol,
       @Valid @RequestBody StakingRequest stakingRequest) {
 
-    var resp = useCase.delegate(requestId, symbol, stakingRequest);
+    var resp = delegateService.delegate(requestId, symbol, stakingRequest);
     return ResponseEntity.ok(resp);
   }
 

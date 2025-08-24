@@ -9,14 +9,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import com.springboot.staking.common.constant.ErrorCode;
-import com.springboot.staking.common.constant.ProductType;
-import com.springboot.staking.common.exception.ApplicationException;
 import com.springboot.staking.data.dto.request.ProductRequest;
 import com.springboot.staking.data.dto.response.ProductResponse;
 import com.springboot.staking.data.mapper.ProductMapper;
 import com.springboot.staking.data.mapper.ProductMapperImpl;
 import com.springboot.staking.data.repository.ProductRepository;
+import com.springboot.staking.shared.constant.ErrorCode;
+import com.springboot.staking.shared.constant.ProductType;
+import com.springboot.staking.shared.exception.ApplicationException;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
