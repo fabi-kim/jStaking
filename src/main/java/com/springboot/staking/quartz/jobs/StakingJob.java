@@ -20,14 +20,18 @@ public class StakingJob implements Job {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         log.info("tick!");
-        stakingTxDao.pickAnyReady().ifPresent(this::processOne);
+        if(stakingTxDao.pickAnyReady().isPresent()){
+            processOne(stakingTxDao.pickAnyReady().get());
+        }
     }
 
-    private void processOne(Long id) {
+    private void processOne(Long id) throws JobExecutionException {
         try {
             stakingStateMachine.processTransaction(id);
         } catch (Exception e) {
             log.error("Failed to process transaction {}: {}", id, e.getMessage(), e);
+            throw new JobExecutionException(e);
+
         }
     }
 }

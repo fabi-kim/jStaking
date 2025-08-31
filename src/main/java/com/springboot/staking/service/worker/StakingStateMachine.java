@@ -35,12 +35,12 @@ public class StakingStateMachine {
     }
   }
 
-  public void processTransaction(Long txId) {
+  public void processTransaction(Long txId) throws Exception {
     StakingTx tx = stakingTxDao.findById(txId);
     executeStep(tx);
   }
 
-  private void executeStep(StakingTx tx) {
+  private void executeStep(StakingTx tx) throws Exception {
     Step currentStep = tx.getStep();
     StepHandler handler = handlers.get(currentStep);
 
@@ -64,6 +64,7 @@ public class StakingStateMachine {
     } catch (Exception e) {
       log.error("Step execution failed for tx {} at step {}", tx.getId(), currentStep, e);
       handleStepFailure(tx);
+      throw e;
     }
   }
 
