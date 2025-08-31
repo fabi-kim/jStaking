@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/v1/admin/tx/broadcast",
+    "headers": {
+      "Content-Type": { "contains": "application/json" }
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": { "Content-Type": "application/json" },
+    "bodyFileName": "broadcast_success.json",
+    "fixedDelayMilliseconds": 50
+  }
+}

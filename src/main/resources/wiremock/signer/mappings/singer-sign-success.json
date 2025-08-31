@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/v1/admin/sign",
+    "headers": {
+      "Content-Type": { "contains": "application/json" }
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": { "Content-Type": "application/json" },
+    "bodyFileName": "sign_success.txt",
+    "fixedDelayMilliseconds": 50
+  }
+}
