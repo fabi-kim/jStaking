@@ -9,7 +9,6 @@ import com.springboot.staking.data.mapper.StakingTxMapper;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -31,19 +30,5 @@ public class StakingWorker {
 
     return stakingTxMapper.toDto(tx);
 
-  }
-
-  @Scheduled(fixedDelayString = "${staking.createWorker.delay:3000}")
-  public void tick() {
-    log.info("tick!");
-    stakingTxDao.pickAnyReady().ifPresent(this::processOne);
-  }
-
-  protected void processOne(Long id) {
-    try {
-      stakingStateMachine.processTransaction(id);
-    } catch (Exception e) {
-      log.error("Failed to process transaction {}: {}", id, e.getMessage(), e);
-    }
   }
 }

@@ -1,0 +1,7 @@
+quartz:
+  jobs:
+    - name: stakingJob
+      className: com.springboot.staking.quartz.jobs.StakingJob
+      trigger:
+        type: simple
+        intervalMillis: 3000
