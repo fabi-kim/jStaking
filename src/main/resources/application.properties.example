@@ -39,6 +39,11 @@ external.proxy.eth.url=
 external.proxy.signer.url=
 external.proxy.signer.id=
 external.proxy.signer.pw=
+
+##localmock에서 설정함.
+external.mockwire.signer.port=19991
+external.proxy.signer.url=http://127.0.0.1:${external.mockwire.signer.port}
+
 #
 feign.httpclient.enabled=
 feign.okhttp.enabled=
